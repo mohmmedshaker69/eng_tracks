@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %} index {% endblock %}
+{% block content %}
+    
+    <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
+        <h2 class="mb-12 text-2xl text-center">Courses</h2>
+        <div class="grid grid-cols-3 gap-3">
+           {% for course in courses %}
+                <div>
+                    <a href="{% url 'detail' course.id %}">
+
+                        <div>
+                            <img src="{{ course.image.url }}" alt="{{ course.name }}" class="rounded-t-xl" style="height: 300px; object-fit: cover; width: 100%;">
+
+
+                        </div>
+                        <div class="p-6 bg-white rounded-b-xl">
+                            <h2 class="text-2xl">{{ course.name }}</h2>
+                            <p class="text-gray-500">price: {{ course.price }}</p>
+                            <p class="text-gray-500">chapters: {{ course.chapters_count }}</p>
+                            <p class="text-gray-500">hours: {{ course.hours }}</p>
+
+                        </div>
+                    </a>
+                </div>
+           {% endfor %}
+        </div>
+    </div>
+        
+    <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
+        <h2 class="mb-12 text-2xl text-center">Categories</h2>
+        <div class="grid grid-cols-3 gap-3">
+            {% for category in categories %}
+
+                <div>
+                    <a href="#">
+    
+                        <div class="p-6 bg-white rounded-b-xl">
+                            <h2 class="text-2xl">{{ category.name }}</h2>
+                            <p class="text-gray-500">{{ category.courses.count }} courses</p>
+                        </div>
+                    </a>
+                </div>
+
+            {% endfor %}
+            
+        </div>
+    </div>
+
+
+{% endblock %}
