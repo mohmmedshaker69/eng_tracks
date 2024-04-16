@@ -26,11 +26,14 @@ class Course(models.Model):
     active = models.BooleanField(default=True)
     hours = models.IntegerField()
     price = models.IntegerField()
-    chapters_count = models.IntegerField()
     created_at=models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['created_at']
+
+    @property
+    def chapters_count(self):
+        return self.chapters.count()
     
     def __str__(self):
         return self.name
@@ -49,7 +52,7 @@ class CourseRating(models.Model):
 
 
 class Chapter(models.Model):
-    course = models.ForeignKey(Course, related_name='course', on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, related_name='chapters', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     content = models.TextField(null=True, blank=True)

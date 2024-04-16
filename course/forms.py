@@ -57,7 +57,6 @@ class CourseForm(forms.ModelForm):
             'active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'hours': forms.NumberInput(attrs={'class': 'form-control'}),  
             'price': forms.NumberInput(attrs={'class': 'form-control'}),  
-            'chapters_count': forms.NumberInput(attrs={'class': 'form-control'}),  
         }
 
 
