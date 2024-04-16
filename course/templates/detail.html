@@ -20,7 +20,7 @@
 
             <div class="mt-6 p-6 bg-white rounded-xl">
                 <p> This is your course </p>
-                <a href="#" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">edit</a>
+                <a href="{% url 'edit' course.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">edit</a>
 
                 <a href="{% url 'delete' course.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl">delete</a>
 
@@ -38,9 +38,11 @@
        {% for chapter in chapters %}
             <div>
                 <a href="#">
-                    <a href="{% url 'lesson' pk=chapter.pk %}">View Lesson</a>
+                    <a href="{% url 'lesson' pk=chapter.pk %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl">lessons</a>
+                    <a href="{% url 'edit_chapter' pk=chapter.pk %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">edit</a>
 
-                   
+                    <a href="{% url 'delete_chapter' chapter.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl">delete</a>
+
                     <div class="p-6 bg-white rounded-b-xl">
                         <h2 class="text-2xl">{{ chapter.name }}</h2>
                         

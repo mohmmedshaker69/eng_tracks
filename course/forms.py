@@ -85,4 +85,40 @@ class LessonForm(forms.ModelForm):
 
         }
 
+class EditCourseForm(forms.ModelForm):
+    class Meta:
+        model=Course
+        fields=( 'name', 'description', 'price', 'image', 'active')
+
+        widgets={
+       
+         'name':forms.TextInput(attrs={
+            'class': 'form-control'
+        }),
+         'description':forms.Textarea(attrs={
+            'class': 'form-control'
+        }),
+         'price':forms.TextInput(attrs={
+            'class': 'form-control'
+        }),
+         'image':forms.FileInput(attrs={
+            'class': 'form-control'
+        })
+    }
+
+class EditChapterForm(forms.ModelForm):
+    class Meta:
+        model=Chapter
+        fields=( 'name', 'description')
+
+        widgets={
+       
+         'name':forms.TextInput(attrs={
+            'class': 'form-control'
+        }),
+         'description':forms.Textarea(attrs={
+            'class': 'form-control'
+        }),
+        
+    }
     

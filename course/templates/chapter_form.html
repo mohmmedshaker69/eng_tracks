@@ -20,13 +20,17 @@
     </div>
     {% endif %}
     
-    <button type="submit" class="mt-6 py-4 px-8 p-6 text-lg bg-teal-500 hover:bg-teal-700 rounded-xl text-white">Submit</button>
+    <!-- <button type="submit" class="mt-6 py-4 px-8 p-6 text-lg bg-teal-500 hover:bg-teal-700 rounded-xl text-white">Submit</button> -->
 
     <!-- Hidden input field to determine the action -->
-    <input type="hidden" name="submit_action" id="submit_action" value="submit">
+    <button type="submit" name="submit_action" value="submit" class="mt-6 py-4 px-8 p-6 text-lg bg-teal-500 hover:bg-teal-700 rounded-xl text-white">Submit</button>
+
+    <button type="submit" name="submit_action" value="submit and add chapters" class="mt-6 py-4 px-8 p-6 text-lg bg-blue-500 hover:bg-blue-700 rounded-xl text-white">Submit and Add Chapters</button>
+
+    <button type="submit" name="submit_action" value="submit and add lessons" class="mt-6 py-4 px-8 p-6 text-lg bg-green-500 hover:bg-green-700 rounded-xl text-white">Submit and Add Lessons</button>
+
 
     <!-- Button to submit the form and go to another form -->
-    <button type="submit" name="submit_action" value="submit_and_redirect" class="mt-6 py-4 px-8 p-6 text-lg bg-blue-500 hover:bg-blue-700 rounded-xl text-white">Submit and Go to Another Form</button>
 </form>
 
 {% endblock %}
