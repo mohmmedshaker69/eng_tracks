@@ -32,3 +32,4 @@ class BuyAdmin(admin.ModelAdmin):
     list_display = ('user', 'course', 'purchased_at')  
 
 
+

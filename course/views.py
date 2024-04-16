@@ -4,6 +4,8 @@ from django.views.generic import CreateView, ListView, UpdateView, DeleteView, D
 from .models import Category, Course, Chapter, CourseRating, Enrollment, Lesson
 from django.urls import reverse_lazy
 from .forms import CourseForm, ChapterForm
+from django.db.models import Q
+
 
 # Create your views here.
 
@@ -20,27 +22,48 @@ class IndexView(TemplateView):
     
 
     
-class CourseFormView(TemplateView):
-    template_name = 'course_form.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['courseform'] = CourseForm()
-        return context
 
-    def post(self,request,*args,**kwargs):
-        courseform = CourseForm(request.POST, request.FILES)
-        if courseform.is_valid():
-            courseform.save()
-     
-     
-        return redirect('index')
-    
-   
-from django.shortcuts import redirect, get_object_or_404
-from django.views.generic import TemplateView
-from .forms import ChapterForm
-from .models import Course
+# class CourseFormView(TemplateView):
+#     template_name = 'course_form.html'
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['courseform'] = CourseForm()
+#         course_pk = self.request.GET.get('course_pk') 
+#         if course_pk:
+#             course = Course.objects.get(pk=course_pk) 
+#             context['course'] = course
+#         return context
+
+#     def post(self, request, *args, **kwargs):
+#         courseform = CourseForm(request.POST, request.FILES)
+#         if courseform.is_valid():
+#             courseform.save()
+#             return redirect('index')
+#         else:
+#             return render(request, self.template_name, {'courseform': courseform})
+
+
+
+def course_form_view(request):
+
+    if request.method=='POST':
+        form=CourseForm(request.POST, request.FILES)
+        if form.is_valid():
+            course=form.save(commit=False)
+            course.created_by= request.user
+            course.save()
+            return redirect ('index')
+        
+    else:
+
+                form=CourseForm()
+                return render(request, 'course_form.html', {
+                    'form':form, 
+                    'title':'New course'
+    })
+
 
 class ChapterFormView(TemplateView):
     template_name = 'chapter_form.html'
@@ -49,6 +72,10 @@ class ChapterFormView(TemplateView):
         context = super().get_context_data(**kwargs)
         course = self.get_course()
         context['chapter_form'] = ChapterForm(course=course)
+        course_pk = self.request.GET.get('course_pk') 
+        if course_pk:
+            course = Course.objects.get(pk=course_pk)  
+            context['course'] = course
         return context
     
     def get_course(self):
@@ -57,10 +84,17 @@ class ChapterFormView(TemplateView):
         return course
 
     def post(self, request, *args, **kwargs):
-        chapter_form = ChapterForm(request.POST, request.FILES)  
+        course = self.get_course()
+        chapter_form = ChapterForm(request.POST, request.FILES, course=course)  
         if chapter_form.is_valid():
             chapter_form.save()
-        return redirect('index')
+            return redirect('course_detail', course_id=course.pk)
+        else:
+         
+            context = self.get_context_data()
+            context['chapter_form'] = chapter_form
+            return self.render_to_response(context)
+
 
 
 class DetailView(DetailView):
@@ -119,6 +153,25 @@ def delete_course(request,pk):
     return redirect('index')
     
 
+def search(request):
+      category_id=request.GET.get('category',0)#
+      query= request.GET.get('query','')
+      categories=Category.objects.all()
+      courses=Course.objects.filter(active=True)
+      
+      if category_id:
+            courses=courses.filter(category_id=category_id)
+
+      if query:
+            courses=courses.filter(Q(name__icontains=query) | Q(description__icontains=query))
+
+      return render(request, 'search.html',{
+            'courses':courses,
+            'query':query,
+            'categories':categories,
+            'category_id':int(category_id),
+
+      })
 
 
 

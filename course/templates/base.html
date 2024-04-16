@@ -11,7 +11,7 @@
         <a href="/" class="text-xl font-semibold">eng_tracks</a>
         <div class="space-x-6">
             
-            <a href="#" class="text-lg font-semibold hover:text-gray-500">search</a>
+            <a href="{% url 'search' %}" class="text-lg font-semibold hover:text-gray-500">search</a>
 
             {% if request.user.is_authenticated %}
                 
