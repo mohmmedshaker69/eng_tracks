@@ -17,6 +17,7 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('edit/<int:pk>/',views.edit, name='edit'),
     path('edit_chapter/<int:pk>/',views.edit_chapter, name='edit_chapter'),
+    path('dashboard/', views.dashboard, name='dashboard'),
 
 
 

@@ -297,6 +297,12 @@ def search(request):
       })
 
 
+def dashboard(request):
+    courses=Course.objects.filter(created_by=request.user)
+
+    return render(request, 'dashboard.html',{
+        'courses':courses,
+    })
 
 
 # def signup(request):
