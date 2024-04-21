@@ -1,7 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=14)
+    image = models.ImageField(upload_to='photos', null=True, blank=True)
+    address = models.TextField()
+    student = models.BooleanField(default=False, null=True, blank=True)
+    learning_place = models.CharField(max_length=150, null=True, blank=True)
+    employee = models.BooleanField(default=False, null=True, blank=True)
+
+
+  
+    def __str__(self):
+        return self.user.username
+
+ 
+
+
+
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -17,16 +38,16 @@ class Category(models.Model):
 class Course(models.Model):
     created_by=models.ForeignKey(User, related_name='course',on_delete=models.PROTECT)   
     category = models.ForeignKey(Category, related_name='course' ,on_delete=models.PROTECT)
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    objectives = models.TextField()
-    requirment = models.TextField()
-    resourses = models.TextField()
-    image = models.ImageField(upload_to='photos')
-    active = models.BooleanField(default=True)
-    hours = models.IntegerField()
-    price = models.IntegerField()
-    created_at=models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=100,null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    objectives = models.TextField(null=True, blank=True)
+    requirment = models.TextField(null=True, blank=True)
+    resourses = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to='photos', null=True, blank=True)
+    active = models.BooleanField(default=True, null=True, blank=True)
+    hours = models.IntegerField(null=True, blank=True)
+    price = models.IntegerField(null=True, blank=True)
+    created_at=models.DateTimeField(auto_now_add=True,null=True, blank=True)
 
     class Meta:
         ordering = ['created_at']
@@ -87,5 +108,15 @@ class Enrollment(models.Model):
     def __str__(self):
         return f"{self.user} bought {self.course} at {self.purchased_at}"
 
+
+
+
+
+# @receiver(post_save , sender=User)
+# def create_user_profile(sender,instance,created , **kwargs):
+#     if created:
+#         Profile.objects.create(
+#             user = instance
+#         )
 
 

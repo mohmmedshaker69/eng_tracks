@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from django.http import HttpResponseNotFound
+from .views import CustomLogoutView
 
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
@@ -13,19 +14,20 @@ urlpatterns = [
     path('addchapter/<int:pk>/', views.chapter_form_view, name='add_chapters'),
     path('addlesson/<int:pk>/', views.lesson_form_view, name='add_lessons'),
     path('course_detail/<int:pk>/', views.DetailView.as_view(), name='course_detail'),
-
     path('search/', views.search, name='search'),
     path('edit/<int:pk>/',views.edit, name='edit'),
     path('edit_chapter/<int:pk>/',views.edit_chapter, name='edit_chapter'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('signup/',views.signup , name='signup'),
+    path('profile',views.profile , name='profile'),
+    path('edit_profile/', views.edit_profile, name='edit_profile'),
+    path('login/', views.LoginView.as_view(), name='login'),
+    path('logout', views.CustomLogoutView.as_view(), name='logout'),
+
 
 
 
     path('favicon.ico', lambda request: HttpResponseNotFound()),
-
-    
-    
-
 
     
 ]

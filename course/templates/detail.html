@@ -38,6 +38,8 @@
        {% for chapter in chapters %}
             <div>
                 <a href="#">
+                    {% if request.user == course.created_by %}
+
                     <a href="{% url 'lesson' pk=chapter.pk %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl">lessons</a>
                     <a href="{% url 'edit_chapter' pk=chapter.pk %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">edit</a>
 
@@ -47,6 +49,14 @@
                         <h2 class="text-2xl">{{ chapter.name }}</h2>
                         
                     </div>
+                    {% else %}
+                    <a href="{% url 'lesson' pk=chapter.pk %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl">lessons</a>
+                    <div class="p-6 bg-white rounded-b-xl">
+                        <h2 class="text-2xl">{{ chapter.name }}</h2>
+                        
+                    </div>
+                    {% endif %}    
+
                 </a>
             </div>
        {% endfor %}

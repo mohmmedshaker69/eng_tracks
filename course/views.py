@@ -1,10 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
-# from .forms import SignupForm
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView, TemplateView
-from .models import Category, Course, Chapter, CourseRating, Enrollment, Lesson
-from django.urls import reverse_lazy
-from .forms import CourseForm, ChapterForm, LessonForm, EditCourseForm, EditChapterForm
+from django.views.generic import  ListView,   DetailView, TemplateView, FormView
+from .models import Category, Course, Chapter, CourseRating, Enrollment, Lesson, Profile
+from django.urls import reverse_lazy, reverse
+from .forms import CourseForm, ChapterForm, LessonForm, EditCourseForm, EditChapterForm, SignupForm, ProfileForm, LoginForm
 from django.db.models import Q
+from django.contrib.auth import authenticate , login
+from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from django.contrib.auth.views import LoginView, LogoutView
+
+
 
 
 # Create your views here.
@@ -21,30 +27,7 @@ class IndexView(TemplateView):
         return context
     
 
-    
-
-
-# class CourseFormView(TemplateView):
-#     template_name = 'course_form.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['courseform'] = CourseForm()
-#         course_pk = self.request.GET.get('course_pk') 
-#         if course_pk:
-#             course = Course.objects.get(pk=course_pk) 
-#             context['course'] = course
-#         return context
-
-#     def post(self, request, *args, **kwargs):
-#         courseform = CourseForm(request.POST, request.FILES)
-#         if courseform.is_valid():
-#             courseform.save()
-#             return redirect('index')
-#         else:
-#             return render(request, self.template_name, {'courseform': courseform})
-
-
+ 
 
 def course_form_view(request):
 
@@ -172,40 +155,6 @@ def edit_chapter(request,pk):
     })
 
 
-
-
-# class ChapterFormView(TemplateView):
-#     template_name = 'chapter_form.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         course = self.get_course()
-#         context['chapter_form'] = ChapterForm(course=course)
-#         course_pk = self.request.GET.get('course_pk') 
-#         if course_pk:
-#             course = Course.objects.get(pk=course_pk)  
-#             context['course'] = course
-#         return context
-    
-#     def get_course(self):
-#         course_id = self.kwargs.get('course_id')
-#         course = get_object_or_404(Course, pk=course_id)
-#         return course
-
-#     def post(self, request, *args, **kwargs):
-#         course = self.get_course()
-#         chapter_form = ChapterForm(request.POST, request.FILES, course=course)  
-#         if chapter_form.is_valid():
-#             chapter_form.save()
-#             return redirect('course_detail', course_id=course.pk)
-#         else:
-         
-#             context = self.get_context_data()
-#             context['chapter_form'] = chapter_form
-#             return self.render_to_response(context)
-
-
-
 class DetailView(DetailView):
     model = Course
     context_object_name = 'course'
@@ -305,6 +254,87 @@ def dashboard(request):
     })
 
 
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user 
+            profile.save()
+            return redirect(reverse_lazy('index'))
+    else:
+        form = ProfileForm()
+    return render(request, 'registration/complete.html', {'form': form})
+
+
+
+@login_required
+def edit_profile(request):
+    profile = request.user.profile  
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('index') 
+    else:
+        form = ProfileForm(instance=profile) 
+    return render(request, 'registration/edit_profile.html', {'form': form})
+
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # Automatically logs in the user
+            return redirect('profile')  # Redirect to the profile page
+    else:
+        form = SignupForm()
+    return render(request, 'registration/signup.html', {'form': form})
+
+
+class LoginView(FormView):
+    template_name = 'registration/login.html'
+    form_class = LoginForm
+    success_url = reverse_lazy('index')
+
+
+    def form_valid(self, form):
+        user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+        if user is not None:
+            login(self.request, user) 
+            return super().form_valid(form)
+
+        return super().form_invalid(form)
+    
+
+    
+class CustomLogoutView(LogoutView):
+    next_page =reverse_lazy('index')
+
+
+
+
+
+
+
+# class SignupView(FormView):
+#     template_name = 'registration/signup.html'
+#     form_class = SignupForm
+#     success_url = reverse_lazy('index')
+
+#     def form_valid(self, form):
+#         username = form.cleaned_data['username']
+#         password = form.cleaned_data['password1']
+#         form.save()
+#         user = authenticate(username=username, password=password)
+#         login(self.request, user)
+#         return super().form_valid(form)
+
+
 # def signup(request):
 
 #     if request.method == 'POST':
@@ -312,12 +342,87 @@ def dashboard(request):
 
 #         if form.is_valid():
 #             form.save()
-#             return redirect('/login/')
+#             return redirect('index')
         
 #     else:    
 
 #         form=SignupForm()
 
-#     return render(request, 'signup.html', {
+#     return render(request, 'registration/signup.html', {
 #         'form': form
 #     })
+
+# def profile(request):
+#     profile = Profile.objects.get(user=request.user)
+#     return render(request,'registration/profile.html',{'profile':profile})
+
+# def profile(request):
+#     if request.method == 'POST': 
+#         form = ProfileForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+           
+#             return redirect(reverse_lazy('index'))
+
+#     else: 
+#         form = ProfileForm()
+
+#     return render(request,'registration/complete.html',{'form':form})
+
+
+
+
+
+# class ChapterFormView(TemplateView):
+#     template_name = 'chapter_form.html'
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         course = self.get_course()
+#         context['chapter_form'] = ChapterForm(course=course)
+#         course_pk = self.request.GET.get('course_pk') 
+#         if course_pk:
+#             course = Course.objects.get(pk=course_pk)  
+#             context['course'] = course
+#         return context
+    
+#     def get_course(self):
+#         course_id = self.kwargs.get('course_id')
+#         course = get_object_or_404(Course, pk=course_id)
+#         return course
+
+#     def post(self, request, *args, **kwargs):
+#         course = self.get_course()
+#         chapter_form = ChapterForm(request.POST, request.FILES, course=course)  
+#         if chapter_form.is_valid():
+#             chapter_form.save()
+#             return redirect('course_detail', course_id=course.pk)
+#         else:
+         
+#             context = self.get_context_data()
+#             context['chapter_form'] = chapter_form
+#             return self.render_to_response(context)
+
+   
+
+
+# class CourseFormView(TemplateView):
+#     template_name = 'course_form.html'
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['courseform'] = CourseForm()
+#         course_pk = self.request.GET.get('course_pk') 
+#         if course_pk:
+#             course = Course.objects.get(pk=course_pk) 
+#             context['course'] = course
+#         return context
+
+#     def post(self, request, *args, **kwargs):
+#         courseform = CourseForm(request.POST, request.FILES)
+#         if courseform.is_valid():
+#             courseform.save()
+#             return redirect('index')
+#         else:
+#             return render(request, self.template_name, {'courseform': courseform})
+

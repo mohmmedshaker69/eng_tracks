@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Complete{% endblock %}
+{% block content %}
+<div class="w-1/2 my-6 mx-auto bg-gray-100 rounded-xl p-6">
+    <h1 class="mb-6 text-3xl">Edit your Profile</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_phone_number" class="block text-sm font-medium text-gray-700">Phone Number:</label><br>
+            {{ form.phone_number }}
+        </div>
+        <div class="mb-3">
+            <label for="id_address" class="block text-sm font-medium text-gray-700">Address:</label><br>
+            {{ form.address }}
+        </div>
+        <div class="mb-3">
+            <label for="id_learning_place" class="block text-sm font-medium text-gray-700">Learning Place:</label><br>
+            {{ form.learning_place }}
+        </div>
+        <div class="mb-4">
+            <label for="id_image" class="block text-sm font-medium text-gray-700">Image:</label>
+            {{ form.image }}
+        </div>
+        {% if form.errors or form.non_field_errors %}
+        <div class="mb-3 p-6 bg-red-100 rounded-xl">
+            {% for field in form %}
+                {{ field.errors }}
+            {% endfor %}
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+        <button type="submit" class="py-4 px-8 p-6 text-lg bg-teal-500 hover:bg-teal-700 rounded-xl text-white">Submit</button>
+    </form>
+</div>
+{% endblock %}

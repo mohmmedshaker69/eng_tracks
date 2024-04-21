@@ -1,7 +1,7 @@
 from django.contrib import admin
-from course.models import Category, Chapter, Course, CourseRating, Lesson, Enrollment
+from course.models import Category, Chapter, Course, CourseRating, Lesson, Enrollment, Profile
 
-
+admin.site.register(Profile)
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
