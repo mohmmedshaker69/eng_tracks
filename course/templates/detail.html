@@ -6,7 +6,10 @@
 
 <div class="grid grid-cols-5 gap-6">
     <div class="col-span-3">
+        {% if course.image %}
         <img src="{{ course.image.url }}" class="rounded-xl" style="height: 300px; object-fit: cover; width: 50%;">
+        {% else %}
+        {% endif %}
     </div>
     <div class="col-span-2 p-6 bg-gray-100 rounded-xl">
         <h1 class="mb-6 text-3xl">{{ course.name }}</h1>
@@ -40,20 +43,21 @@
                 <a href="#">
                     {% if request.user == course.created_by %}
 
-                    <a href="{% url 'lesson' pk=chapter.pk %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl">lessons</a>
-                    <a href="{% url 'edit_chapter' pk=chapter.pk %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">edit</a>
-
-                    <a href="{% url 'delete_chapter' chapter.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl">delete</a>
-
+                   
                     <div class="p-6 bg-white rounded-b-xl">
                         <h2 class="text-2xl">{{ chapter.name }}</h2>
-                        
+                        <a href="{% url 'lesson' pk=chapter.pk %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl">lessons</a>
+                        <a href="{% url 'edit_chapter' pk=chapter.pk %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">edit</a>
+    
+                        <a href="{% url 'delete_chapter' chapter.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl">delete</a>
+    
                     </div>
                     {% else %}
-                    <a href="{% url 'lesson' pk=chapter.pk %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl">lessons</a>
+
                     <div class="p-6 bg-white rounded-b-xl">
                         <h2 class="text-2xl">{{ chapter.name }}</h2>
-                        
+                        <a href="{% url 'lesson' pk=chapter.pk %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl">lessons</a>
+
                     </div>
                     {% endif %}    
 

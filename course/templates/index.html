@@ -10,16 +10,16 @@
                     <a href="{% url 'detail' course.id %}">
 
                         <div>
-                            <img src="{{ course.image.url }}" alt="{{ course.name }}" class="rounded-t-xl" style="height: 300px; object-fit: cover; width: 100%;">
-
-
+                            {% if course.image %}
+                                <img src="{{ course.image.url }}" alt="{{ course.name }}" class="rounded-t-xl" style="height: 300px; object-fit: cover; width: 100%;">
+                            {% else %}
+                            {% endif %}
                         </div>
                         <div class="p-6 bg-white rounded-b-xl">
                             <h2 class="text-2xl">{{ course.name }}</h2>
                             <p class="text-gray-500">price: {{ course.price }}</p>
                             <p class="text-gray-500">chapters: {{ course.chapters_count }}</p>
                             <p class="text-gray-500">hours: {{ course.hours }}</p>
-
                         </div>
                     </a>
                 </div>

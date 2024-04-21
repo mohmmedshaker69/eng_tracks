@@ -289,8 +289,8 @@ def signup(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # Automatically logs in the user
-            return redirect('profile')  # Redirect to the profile page
+            login(request, user)  
+            return redirect('profile')  
     else:
         form = SignupForm()
     return render(request, 'registration/signup.html', {'form': form})
