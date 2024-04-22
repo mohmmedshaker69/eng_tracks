@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm , AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm , AuthenticationForm, UserChangeForm, PasswordChangeForm
 from .models import Course, Chapter, Lesson, Profile
 
 class LoginForm(AuthenticationForm):
@@ -20,12 +20,6 @@ class SignupForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username','email','password1','password2']
-
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("This email address is already in use. Please use a different email.")
-        return email
 
     # def save(self, commit=True):
     #     user = super().save(commit=False)
@@ -165,6 +159,34 @@ class EditChapterForm(forms.ModelForm):
     
 
 
+class EditAcountForm(UserChangeForm):
+    
+
+    class Meta:
+        model = User
+        fields = ['username','email']
+
+
+    username= forms.CharField(widget=forms.TextInput(attrs={
+        'placeholder': 'your username',
+        'class': 'w-full py-4 px-6 rounded-xl'
+    }))    
+    email= forms.CharField(widget=forms.TextInput(attrs={
+        'placeholder': 'your email',
+        'class': 'w-full py-4 px-6 rounded-xl'
+    }))         
+
+    
+
+
+class ChangePasswordForm(PasswordChangeForm):
+    email = forms.EmailField(max_length=254)
+
+    class Meta:
+        model = User
+        fields = ['email','password1','password2']
+
+
 
 # class SignupForm(UserCreationForm):
 #     image = forms.ImageField(required=False)  # Define image field
@@ -211,3 +233,38 @@ class EditChapterForm(forms.ModelForm):
 #         'placeholder': 'Repeat password',
 #         'class': 'w-full py-4 px-6 rounded-xl'
 #     }))   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # def __init__(self, *args, **kwargs):
+
+    #     super().__init__(*args, **kwargs)
+        
+    #     self.fields['password1'].required = False
+    #     self.fields['password2'].required = False
+
+
+    # def save(self, commit=True):
+    #     user = super().save(commit=False)
+    #     user.email = self.cleaned_data['email']
+    #     if commit:
+    #         user.save()
+    #     return user

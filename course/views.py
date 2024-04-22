@@ -2,14 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import  ListView,   DetailView, TemplateView, FormView
 from .models import Category, Course, Chapter, CourseRating, Enrollment, Lesson, Profile
 from django.urls import reverse_lazy, reverse
-from .forms import CourseForm, ChapterForm, LessonForm, EditCourseForm, EditChapterForm, SignupForm, ProfileForm, LoginForm
+from .forms import CourseForm, ChapterForm, LessonForm, EditCourseForm, EditChapterForm, SignupForm, ProfileForm, LoginForm, EditAcountForm, ChangePasswordForm
 from django.db.models import Q
 from django.contrib.auth import authenticate , login
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
-from django.contrib.auth.views import LoginView, LogoutView
-
+from django.contrib.auth import logout,  update_session_auth_hash
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
+from django.contrib.auth.models import User
 
 
 
@@ -283,14 +283,34 @@ def edit_profile(request):
     return render(request, 'registration/edit_profile.html', {'form': form})
 
 
+@login_required
+def edit_account(request):
+    user = request.user
+    if request.method == 'POST':
+        form = EditAcountForm(request.POST,  instance=user)
+        if form.is_valid():
+        
+            user = form.save()
+            login(request, user)
+            return redirect('index')
+    else:
+        form = EditAcountForm(instance=user)
+    return render(request, 'registration/edit_account.html', {'form': form})
+
 
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)  
-            return redirect('profile')  
+            email = form.cleaned_data['email']
+            if request.user.is_authenticated and email == request.user.email:
+                form.add_error('email', "You are already registered with this email.")
+            elif User.objects.filter(email=email).exists():
+                form.add_error('email', "This email address is already in use. Please use a different email.")
+            else:
+                user = form.save()
+                login(request, user)  
+                return redirect('profile')  
     else:
         form = SignupForm()
     return render(request, 'registration/signup.html', {'form': form})
@@ -318,6 +338,26 @@ class CustomLogoutView(LogoutView):
 
 
 
+# class ChangePasswordView(PasswordChangeView):
+#     form_class = ChangePasswordForm
+#     template_name = 'registration/password_change.html'
+#     success_url = reverse_lazy('index') 
+
+#     def form_valid(self, form):
+#         response = super().form_valid(form)
+#         update_session_auth_hash(self.request, form.user)
+#         return response
+
+def change_password(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            return redirect('index')  
+    else:
+        form = ChangePasswordForm(request.user)
+    return render(request, 'registration/password_change.html', {'form': form})
 
 
 

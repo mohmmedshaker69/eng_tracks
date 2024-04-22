@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block title %} Signup {% endblock %}
 {% block content %}
+{% load socialaccount %}
+
 {% csrf_token %}
 <div class="w-1/2 my-6 mx-auto bg-gray-100 rounded-xl p-6">
     <h1 class="mb-6 text-3xl">Signup</h1>
@@ -51,6 +53,7 @@
 
         
         <button class="py-4 px-8 p-6 text-lg bg-teal-500 hover:bg-teal-700 rounded-xl text-white">Submit</button>
+        <a href="{%  provider_login_url 'github' %}" class="px-6 py-3 text-lg font-semibold bg-orange-500 text-white rounded-xl hover:bg-gray-700">Login with github</a>
 
     </form>
 

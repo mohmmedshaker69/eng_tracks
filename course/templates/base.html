@@ -1,3 +1,5 @@
+{% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,19 +13,22 @@
         <a href="/" class="text-xl font-semibold">eng_tracks</a>
         <div class="space-x-6">
             
-            <a href="{% url 'search' %}" class="text-lg font-semibold hover:text-gray-500">search</a>
-
+            <a href="{% url 'search' %}" class="px-6 py-3 text-lg font-semibold bg-green-500 text-white rounded-xl hover:bg-gray-700">search</a>
+            
             {% if request.user.is_authenticated %}
-                
-            <a href="{% url 'add_course' %}" class="text-lg font-semibold hover:text-gray-500">New Course</a>
+            <a href="{% url 'add_course' %}" class="px-6 py-3 text-lg font-semibold bg-orange-500 text-white rounded-xl hover:bg-gray-700">add_course</a>
+
             <a href="{% url 'dashboard' %}" class="px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700">Dashboard</a>
-            <a href="{% url 'edit_profile' %}" class="px-6 py-3 text-lg font-semibold bg-orange-500 text-white rounded-xl hover:bg-gray-700">edit_profile</a>
+            <a href="{% url 'setting' %}" class="px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl hover:bg-gray-700">Setting</a>
+            
+
             <form action="{% url 'logout' %}" method="post" class="inline" id="logoutForm">
                 {% csrf_token %}
                 <button type="submit" onclick="return confirm('Are you sure you want to logout?')" class="px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl hover:bg-red-700">Logout</button>
             </form>
             {% else %}
 
+            <a href="{%  provider_login_url 'github' %}" class="px-6 py-3 text-lg font-semibold bg-orange-500 text-white rounded-xl hover:bg-gray-700">Login with github</a>
                 <a href="{% url 'signup' %}" class="px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">sign up</a>
                 <a href="{% url 'login' %}" class="px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700">login</a>
 
