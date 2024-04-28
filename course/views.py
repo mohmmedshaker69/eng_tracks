@@ -338,15 +338,6 @@ class CustomLogoutView(LogoutView):
 
 
 
-# class ChangePasswordView(PasswordChangeView):
-#     form_class = ChangePasswordForm
-#     template_name = 'registration/password_change.html'
-#     success_url = reverse_lazy('index') 
-
-#     def form_valid(self, form):
-#         response = super().form_valid(form)
-#         update_session_auth_hash(self.request, form.user)
-#         return response
 
 def change_password(request):
     if request.method == 'POST':
@@ -466,3 +457,13 @@ def change_password(request):
 #         else:
 #             return render(request, self.template_name, {'courseform': courseform})
 
+
+# class ChangePasswordView(PasswordChangeView):
+#     form_class = ChangePasswordForm
+#     template_name = 'registration/password_change.html'
+#     success_url = reverse_lazy('index') 
+
+#     def form_valid(self, form):
+#         response = super().form_valid(form)
+#         update_session_auth_hash(self.request, form.user)
+#         return response

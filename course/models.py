@@ -63,7 +63,7 @@ class Course(models.Model):
 class CourseRating(models.Model):
     course = models.ForeignKey(Course, related_name='ratings', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='course_ratings', on_delete=models.CASCADE)
-    stars = models.IntegerField(choices=[(i, i) for i in range(1, 6)])  ###
+    stars = models.IntegerField(choices=[(i, i) for i in range(1, 6)])  
 
     class Meta:
         unique_together = ('course', 'user')  # Each user can only rate a course once
