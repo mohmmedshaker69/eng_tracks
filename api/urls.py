@@ -4,6 +4,7 @@ from django.http import HttpResponseNotFound
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.routers import DefaultRouter
+from .views import register_user, user_login, user_logout
 
 app_name='api'
 
@@ -27,6 +28,9 @@ urlpatterns = [
     path('course/<int:pk>/chapters/<int:chapter_pk>/', views.ChapterDetailAPIView.as_view()),
     path('detail_lesson/<int:pk>/', views.LessonDetailAPIView.as_view()),
     path('user/<int:pk>/', views.UserViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'})),
+    path('register/', register_user, name='register'),
+    path('login/', user_login, name='login'),
+    path('logout/', user_logout, name='logout'),
 
   
 
