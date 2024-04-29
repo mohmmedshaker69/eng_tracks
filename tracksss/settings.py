@@ -51,8 +51,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'rest_framework',
+    'rest_framework.authtoken',
     'course',
+    'api',
 ]
+
+ROOT_URLCONF = 'course.urls'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -169,3 +175,38 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # SOCIAL_AUTH_FACEBOOK_KEY = '1632081574196695' # Facebook App ID
 # SOCIAL_AUTH_FACEBOOK_SECRET = '313871a0dd6ae65d4945ae06a3984980'
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES':
+#     ['rest_framework.authentication.TokenAuthentication'],
+#     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+#     'PAGE_SIZE': 10
+
+#     'DEFAULT_PERMISSION_CLASSES':
+#     ['rest_framework.permissions.IsAuthenticated'],
+# }
+
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'django_queries.log',  # Choose a file name and path
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}

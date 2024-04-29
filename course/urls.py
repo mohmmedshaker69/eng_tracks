@@ -28,6 +28,7 @@ urlpatterns = [
     path('logout', views.CustomLogoutView.as_view(), name='logout'),
     path('change_password', views.change_password, name='change_password'),\
     path('about/', TemplateView.as_view(template_name='setting.html'), name='setting'),
+    ###########################
 
 
     path('favicon.ico', lambda request: HttpResponseNotFound()),
