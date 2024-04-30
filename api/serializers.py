@@ -1,9 +1,9 @@
-from course.models import Course, Chapter,Category ,CourseRating,Lesson
+from course.models import Course, Chapter,Category ,Lesson
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from .models import CustomUser
-
+from .models import CustomUser , Payment
+from . models import CourseRating
 
 
 
@@ -32,9 +32,21 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
-class UserSerializer(serializers.ModelSerializer):
+
+
+class CourseRatingSerializer(serializers.ModelSerializer):
+    course = serializers.PrimaryKeyRelatedField(queryset = Course.objects.all(), required = False)
+    user = serializers.PrimaryKeyRelatedField(queryset = User.objects.all(), required = False)
     class Meta :
-        model = User
+        model = CourseRating
+        fields = '__all__'
+        
+
+class CoursePaymentSerializer(serializers.ModelSerializer):
+    course = serializers.PrimaryKeyRelatedField(queryset = Course.objects.all(), required = False)
+    user = serializers.PrimaryKeyRelatedField(queryset = User.objects.all(), required = False)
+    class Meta :
+        model = Payment
         fields = '__all__'
 
 
@@ -42,6 +54,8 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta :
         model = Course
         fields = '__all__'
+
+
 
 
 class ChapterSerializer(serializers.ModelSerializer):

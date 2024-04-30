@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import  ListView,   DetailView, TemplateView, FormView
-from .models import Category, Course, Chapter, CourseRating, Enrollment, Lesson, Profile
+from .models import Category, Course, Chapter, Lesson, Profile
 from django.urls import reverse_lazy, reverse
 from .forms import CourseForm, ChapterForm, LessonForm, EditCourseForm, EditChapterForm, SignupForm, ProfileForm, LoginForm, EditAcountForm, ChangePasswordForm
 from django.db.models import Q

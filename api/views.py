@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from django.http.response import JsonResponse
-from course.models import Course, Chapter, Category, CourseRating, Lesson
-from .serializers import UserSerializer, CourseSerializer, CategorySerializer, ChapterSerializer, LessonSerializer, UserSerializer
+from course.models import Course, Chapter, Category, Lesson
+from .serializers import UserSerializer, CourseSerializer, CategorySerializer, ChapterSerializer, LessonSerializer, UserSerializer, CourseRatingSerializer, CoursePaymentSerializer
 from rest_framework import status, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import Http404
+from rest_framework.generics import ListAPIView
+
 from rest_framework import generics, mixins, viewsets
 from django.contrib.auth.models import User
 from rest_framework.decorators import action
@@ -18,10 +20,25 @@ from rest_framework import permissions
 from rest_framework import status
 from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
-from .models import CustomUser
+from .models import CustomUser, CourseRating, Payment
 from rest_framework.decorators import api_view, permission_classes
+from django.db.models import Q
+from django_filters import rest_framework as filters
+from rest_framework.generics import ListAPIView
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 
+
+
+
+class SearchCourse(ListAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['name', 'description', 'category__name', 'category__description']
+
+
+    
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -73,8 +90,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = (AllowAny,)
-
-
     @action(detail=True, methods=['post'], url_name="add_chapter",url_path="add_chapter")
     def create_chapter(self, request, pk):
         course = self.get_object()
@@ -83,7 +98,35 @@ class CourseViewSet(viewsets.ModelViewSet):
             serializer.save(course=course)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
+
+
+    @action(detail=True, methods=['post'], url_name="add_rating",url_path="add_rating")
+    def add_rating(self, request, pk):
+        course = self.get_object()
+        user = User.objects.first()
+        request.data.update({'course':course.pk, 'user':user.pk})
+        serializer = CourseRatingSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+    @action(detail=True, methods=['post'], url_name="pay", url_path="pay")
+    def payment(self, request, pk):
+        course = self.get_object()
+        user = User.objects.first() 
+
+        payment_data = {'course': course.pk, 'user': user.pk}
+        serializer = CoursePaymentSerializer(data=payment_data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ChapterViewSet(viewsets.ModelViewSet):
     queryset = Chapter.objects.all().prefetch_related('course')
@@ -110,7 +153,7 @@ class LessonViewSet(viewsets.ModelViewSet):
 
 
 
-
+##############################################################################################
 
 
 

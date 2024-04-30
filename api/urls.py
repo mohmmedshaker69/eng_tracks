@@ -31,7 +31,8 @@ urlpatterns = [
     path('register/', register_user, name='register'),
     path('login/', user_login, name='login'),
     path('logout/', user_logout, name='logout'),
+    # path('search/', views.SearchAPIView.as_view()),
+    path('search/', views.SearchCourse.as_view()),
 
-  
 
 ]
